@@ -6,33 +6,33 @@ from matplotlib.ticker import MaxNLocator
 def welcome():
     print("Welcome to the Vector Visualizer!\n\n")
     print("Here you can see the results of vector addition, multiplication and a few simple linear transformations")
-    answer = input("You can add or multiply two vectors together:\n")
+    answer = input("You can add two vectors together or you can multiply a vector by a scalar:\n")
     arr = []
     if (answer.lower() == 'add'):
-        arr = getVectors()
+        arr = getVectors(answer)
         v3 = addVectors(arr)
         arr.append(v3)
-    elif(answer.lower() == 'mult'):
-        arr = getVectors()
-        v3 = multVectors(arr)
+    elif(answer.lower() == 'multiply'):
+        arr = getVectors(answer)
+        v2 = multVectors(arr)
         arr.append(v3)
     return arr
     
     
-def getVectors():
+def getVectors(answer):
     vectorSpace = []
-    
     userInput = input("Enter elements for vector 1. Please make sure they are space-seperated:\n")
-    v1 = np.fromstring(userInput, sep=' ', dtype=int)   
-    userInput = input("Enter elements for vector 2. Please make sure they are space-seperated\n")
-    v2 = np.fromstring(userInput, sep = ' ', dtype=int)
-    
-    if(len(v1) != len(v2)):
-        print("Make the vectors have the same length. Try again")
-        getVectors()
-        
+    v1 = np.fromstring(userInput, sep=' ', dtype=int)
     vectorSpace.append(v1)
-    vectorSpace.append(v2)
+    
+    if (answer.lower() == "add"):
+        userInput = input("Enter elements for vector 2. Please make sure they are space-seperated\n")
+        v2 = np.fromstring(userInput, sep = ' ', dtype=int)
+        vectorSpace.append(v2)
+    else:
+        scalar = int(input("Enter an integer that will be used as a scalar\n"))
+        vectorSpace.append(scalar)
+        
     return vectorSpace
 
 def addVectors(arr):
@@ -42,8 +42,10 @@ def addVectors(arr):
 
 def multVectors(arr):
     v1 = arr[0]
-    v2 = arr[1]
-    print(f'{v1.dot(v2)} is the dot product of these two vectors')
+    scalar = arr[1]
+    del arr[1]
+    return (v1*scalar)
+    
     
 def graphVectors(vectorSpace):
     fig, ax = plt.subplots(figsize=(12,10))
@@ -56,7 +58,6 @@ def graphVectors(vectorSpace):
     plt.show()
     
 def setAxLims(ax, vectorSpace):
-   # print(vectorSpace)
     minX, minY = np.min(vectorSpace, axis=0)
     maxX, maxY = np.max(vectorSpace, axis=0)
     if (minX >= 0 and maxX >= 0):
@@ -82,21 +83,14 @@ def drawVectors(ax,vectorSpace):
     '''
     For each vector in vector space
     We will run that vector in another function that
-    takes that plots it using ax.quiver'''
-    v1 = vectorSpace[0]
-    v2 = vectorSpace[1]
-    v3 = vectorSpace[2]
-    
-    ax.quiver(0,0,v1[0],v1[1], angles='xy',
-            scale_units='xy',scale=1,color='red',label="v1")
-    ax.quiver(v1[0],v1[1],v2[0],v2[1],angles ='xy',scale_units='xy',scale=1,
-            color='blue',label='v2')
-    ax.quiver(0,0,v3[0],v3[1],angles ='xy',scale_units='xy',scale=1,
-            color='green',label='v3 = v1 + v2')
-    ax.quiver(0,0,v2[0],v2[1],angles ='xy',scale_units='xy',scale=1,
-            color='blue',label='v2 from origin')
-    ax.quiver(v2[0],v2[1],v1[0],v1[1],angles ='xy',scale_units='xy',scale=1,
-            color='red',label='v1 from v2')
+    takes that plots it using ax.quiver
+    '''
+    colors = ['r','b','k','g']
+    count = 0
+    for v in vectorSpace:
+        ax.quiver(0,0,v[0],v[1], angles='xy',scale_units='xy',scale=1,color=colors[count],zorder=2-count,label="v"+str(count+1))
+        count +=1
+   
     
 vectorSpace = welcome()
 vectorSpace = np.array(vectorSpace)
