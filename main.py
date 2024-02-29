@@ -1,15 +1,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
-'''
-    Need a function that can return the vectorSpace list
-    That holds all of the vectors for the display
-'''
+
 
 def welcome():
     print("Welcome to the Vector Visualizer!\n\n")
     print("Here you can see the results of vector addition, multiplication and a few simple linear transformations")
-    answer = input("You can add or multiply two vectors together")
+    answer = input("You can add or multiply two vectors together:\n")
     arr = []
     if (answer.lower() == 'add'):
         arr = getVectors()
@@ -49,22 +46,30 @@ def multVectors(arr):
     print(f'{v1.dot(v2)} is the dot product of these two vectors')
     
 def graphVectors(vectorSpace):
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(12,10))
     setAxLims(ax,vectorSpace)    
     createAx(ax)
     drawVectors(ax,vectorSpace)
-   
+    ax.set_xlabel("X")
+    ax.set_ylabel("Y")
     plt.legend()
     plt.show()
     
 def setAxLims(ax, vectorSpace):
-    maxVal = np.max(vectorSpace)
-    minVal = np.min(vectorSpace)
-    
-    absMax = max(abs(maxVal), abs(minVal))
-    ax.set(xlim=(-absMax, absMax), ylim=(-absMax, absMax))
-    
+   # print(vectorSpace)
+    minX, minY = np.min(vectorSpace, axis=0)
+    maxX, maxY = np.max(vectorSpace, axis=0)
+    if (minX >= 0 and maxX >= 0):
+        ax.set_xlim(0,maxX+1)
+    else:
+        ax.set_xlim(maxX,-maxX)
+    if (minY>=0 and maxY>=0):
+        ax.set_ylim(0,maxY+1)
+    else:
+        ax.set_xlim(maxY,-maxY)
+ 
 def createAx(ax):
+    plt.grid()
     ax.spines['bottom'].set_position('zero')
     ax.spines['left'].set_position('zero')
     ax.spines['top'].set_visible(False)
@@ -74,16 +79,25 @@ def createAx(ax):
     ax.yaxis.set_major_locator(MaxNLocator(integer=True))
 
 def drawVectors(ax,vectorSpace):
+    '''
+    For each vector in vector space
+    We will run that vector in another function that
+    takes that plots it using ax.quiver'''
     v1 = vectorSpace[0]
     v2 = vectorSpace[1]
     v3 = vectorSpace[2]
-    origin = [0,0]
-    ax.quiver(origin[0],origin[1],v1[0],v1[1], angles='xy',
+    
+    ax.quiver(0,0,v1[0],v1[1], angles='xy',
             scale_units='xy',scale=1,color='red',label="v1")
-    ax.quiver(origin[0],origin[1],v2[0],v1[1],angles ='xy',scale_units='xy',scale=1,
+    ax.quiver(v1[0],v1[1],v2[0],v2[1],angles ='xy',scale_units='xy',scale=1,
             color='blue',label='v2')
-    ax.quiver(origin[0],origin[1],v3[0],v3[1],angles ='xy',scale_units='xy',scale=1,
+    ax.quiver(0,0,v3[0],v3[1],angles ='xy',scale_units='xy',scale=1,
             color='green',label='v3 = v1 + v2')
+    ax.quiver(0,0,v2[0],v2[1],angles ='xy',scale_units='xy',scale=1,
+            color='blue',label='v2 from origin')
+    ax.quiver(v2[0],v2[1],v1[0],v1[1],angles ='xy',scale_units='xy',scale=1,
+            color='red',label='v1 from v2')
     
 vectorSpace = welcome()
+vectorSpace = np.array(vectorSpace)
 graphVectors(vectorSpace)
