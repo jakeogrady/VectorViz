@@ -20,21 +20,25 @@ def options():
     elif(answer == 'multiply'):
         arr = getVector(answer)
         v2 = multVectors(arr)
-        arr.append(v2)
     elif(answer == 'reflectionx'):
         reflMatrix = np.array([[1,0],[0,-1]])
         v2 = np.matmul(v1,reflMatrix)
-        arr.append(v2)
     elif(answer == 'reflectiony'):
         reflMatrix = np.array([[-1,0],[0,1]])
         v2 = np.matmul(v1,reflMatrix)
-        
-        arr.append(v2)
+    elif(answer == 'sheary'):
+        shearMatrix = np.array([[1,0],[2,1]])
+        v2 = np.matmul(v1,shearMatrix)
+    elif(answer == 'shearx'):
+        shearMatrix = np.array([[1,2],[0,1]])
+        v2 = np.matmul(v1,shearMatrix)
     elif(answer == 'help'):
         print("Here are the following options for commands:\n")
-        print("add, multiply and reflection")
+        print("add, multiply, reflectionX, reflectionY, shearY, shearX")
     else:
         print("Help")
+        
+    arr.append(v2)
     return arr
     
     
@@ -103,14 +107,14 @@ def drawVectors(ax,vectorSpace):
         count +=1
     if (len(vectorSpace)>2):
         drawDottedLines(vectorSpace)
-        
-    
-        
+          
 def drawDottedLines(vectorSpace):
     v3 = vectorSpace[2]
     for v in vectorSpace[:2]:
         plt.plot([v[0],v3[0]],[v[1],v3[1]],c='g',linewidth=2,
                  marker='o', linestyle='--')
+        
+        
         
 ####################
 #   Run Code Here
