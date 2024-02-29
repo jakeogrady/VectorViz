@@ -2,38 +2,46 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 
-
 def welcome():
     print("Welcome to the Vector Visualizer!\n\n")
     print("Here you can see the results of vector addition, multiplication and a few simple linear transformations")
+
+def options():
     answer = input("You can add two vectors together or you can multiply a vector by a scalar:\n")
     arr = []
-    if (answer.lower() == 'add'):
-        arr = getVectors(answer)
-        v3 = addVectors(arr)
-        arr.append(v3)
-    elif(answer.lower() == 'multiply'):
-        arr = getVectors(answer)
+    answer = answer.lower()
+    v1 = getVector()
+    arr.append(v1)
+    
+    if (answer == 'add'):
+        v2 = getVector()
+        arr.append(v2)
+        arr.append(addVectors(arr))
+    elif(answer == 'multiply'):
+        arr = getVector(answer)
         v2 = multVectors(arr)
-        arr.append(v3)
+        arr.append(v2)
+    elif(answer == 'reflectionx'):
+        reflMatrix = np.array([[1,0],[0,-1]])
+        v2 = np.matmul(v1,reflMatrix)
+        arr.append(v2)
+    elif(answer == 'reflectiony'):
+        reflMatrix = np.array([[-1,0],[0,1]])
+        v2 = np.matmul(v1,reflMatrix)
+        
+        arr.append(v2)
+    elif(answer == 'help'):
+        print("Here are the following options for commands:\n")
+        print("add, multiply and reflection")
+    else:
+        print("Help")
     return arr
     
     
-def getVectors(answer):
-    vectorSpace = []
+def getVector():
     userInput = input("Enter elements for vector 1. Please make sure they are space-seperated:\n")
     v1 = np.fromstring(userInput, sep=' ', dtype=int)
-    vectorSpace.append(v1)
-    
-    if (answer.lower() == "add"):
-        userInput = input("Enter elements for vector 2. Please make sure they are space-seperated\n")
-        v2 = np.fromstring(userInput, sep = ' ', dtype=int)
-        vectorSpace.append(v2)
-    else:
-        scalar = int(input("Enter an integer that will be used as a scalar\n"))
-        vectorSpace.append(scalar)
-        
-    return vectorSpace
+    return v1
 
 def addVectors(arr):
     v1 = arr[0]
@@ -41,9 +49,9 @@ def addVectors(arr):
     return (v1+v2)
 
 def multVectors(arr):
+    scalar = int(input("Enter an integer that will be used as a scalar\n"))
+    vectorSpace.append(scalar)
     v1 = arr[0]
-    scalar = arr[1]
-    del arr[1]
     return (v1*scalar)
     
     
@@ -60,6 +68,9 @@ def graphVectors(vectorSpace):
 def setAxLims(ax, vectorSpace):
     minX, minY = np.min(vectorSpace, axis=0)
     maxX, maxY = np.max(vectorSpace, axis=0)
+    print(minX)
+    print(maxX)
+    
     if (minX >= 0 and maxX >= 0):
         ax.set_xlim(0,maxX+1)
     else:
@@ -67,7 +78,7 @@ def setAxLims(ax, vectorSpace):
     if (minY>=0 and maxY>=0):
         ax.set_ylim(0,maxY+1)
     else:
-        ax.set_xlim(maxY,-maxY)
+        ax.set_ylim(maxY,-maxY)
  
 def createAx(ax):
     plt.grid()
@@ -88,10 +99,23 @@ def drawVectors(ax,vectorSpace):
     colors = ['r','b','k','g']
     count = 0
     for v in vectorSpace:
-        ax.quiver(0,0,v[0],v[1], angles='xy',scale_units='xy',scale=1,color=colors[count],zorder=2-count,label="v"+str(count+1))
+        ax.quiver(0,0,v[0],v[1], angles='xy',scale_units='xy',scale=1,color=colors[count],zorder=3-count,label="v"+str(count+1))
         count +=1
-   
+    if (len(vectorSpace)>2):
+        drawDottedLines(vectorSpace)
+        
     
-vectorSpace = welcome()
+        
+def drawDottedLines(vectorSpace):
+    v3 = vectorSpace[2]
+    for v in vectorSpace[:2]:
+        plt.plot([v[0],v3[0]],[v[1],v3[1]],c='g',linewidth=2,
+                 marker='o', linestyle='--')
+        
+####################
+#   Run Code Here
+####################
+welcome()     
+vectorSpace = options()
 vectorSpace = np.array(vectorSpace)
 graphVectors(vectorSpace)
