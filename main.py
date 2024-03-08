@@ -17,7 +17,7 @@ def options():
         v2 = getVector()
         arr.append(v2)
         arr.append(addVectors(arr))
-    elif(answer == 'multiply'):
+    elif(answer == 'scaling'):
         arr = getVector(answer)
         v2 = multVectors(arr)
     elif(answer == 'reflectionx'):
@@ -34,7 +34,7 @@ def options():
         v2 = np.matmul(v1,shearMatrix)
     elif(answer == 'help'):
         print("Here are the following options for commands:\n")
-        print("add, multiply, reflectionX, reflectionY, shearY, shearX")
+        print("add, scaling, reflectionX, reflectionY, shearY, shearX")
     else:
         print("Help")
         
@@ -72,8 +72,6 @@ def graphVectors(vectorSpace):
 def setAxLims(ax, vectorSpace):
     minX, minY = np.min(vectorSpace, axis=0)
     maxX, maxY = np.max(vectorSpace, axis=0)
-    print(minX)
-    print(maxX)
     
     if (minX >= 0 and maxX >= 0):
         ax.set_xlim(0,maxX+1)
