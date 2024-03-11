@@ -2,62 +2,45 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 
-def welcome():
-    print("Welcome to the Vector Visualizer!\n\n")
-    print("Here you can see the results of vector addition, multiplication and a few simple linear transformations")
-
-def options():
-    answer = input("You can add two vectors together or you can multiply a vector by a scalar:\n")
-    arr = []
-    answer = answer.lower()
-    v1 = getVector()
-    arr.append(v1)
+def options(operation, v1, v2=None):
     
-    if (answer == 'add'):
-        v2 = getVector()
-        arr.append(v2)
-        arr.append(addVectors(arr))
-    elif(answer == 'scaling'):
-        arr = getVector(answer)
-        v2 = multVectors(arr)
-    elif(answer == 'reflectionx'):
-        reflMatrix = np.array([[1,0],[0,-1]])
-        v2 = np.matmul(v1,reflMatrix)
-    elif(answer == 'reflectiony'):
-        reflMatrix = np.array([[-1,0],[0,1]])
-        v2 = np.matmul(v1,reflMatrix)
-    elif(answer == 'sheary'):
-        shearMatrix = np.array([[1,0],[2,1]])
-        v2 = np.matmul(v1,shearMatrix)
-    elif(answer == 'shearx'):
-        shearMatrix = np.array([[1,2],[0,1]])
-        v2 = np.matmul(v1,shearMatrix)
-    elif(answer == 'help'):
-        print("Here are the following options for commands:\n")
-        print("add, scaling, reflectionX, reflectionY, shearY, shearX")
+    operations = {
+        'add': addVectors,
+        'reflectionx': reflX,
+        'reflectiony': reflY,
+        'shearx': shearX,
+        'sheary': shearY
+    }
+    
+    if operation == 'add' and v2 is not None:
+        return operations[operation](v1,v2)
     else:
-        print("Help")
+        return operations[operation](v1)
+
         
-    arr.append(v2)
-    return arr
-    
-    
-def getVector():
-    userInput = input("Enter elements for vector 1. Please make sure they are space-seperated:\n")
-    v1 = np.fromstring(userInput, sep=' ', dtype=int)
+
+def getVector(v):
+    v1 = np.fromstring(v, sep=' ', dtype=int)
     return v1
 
-def addVectors(arr):
-    v1 = arr[0]
-    v2 = arr[1]
-    return (v1+v2)
+def addVectors(v1, v2):
+    return v1 + v2
 
-def multVectors(arr):
-    scalar = int(input("Enter an integer that will be used as a scalar\n"))
-    vectorSpace.append(scalar)
-    v1 = arr[0]
-    return (v1*scalar)
+def reflX(v1):
+    reflMatrix = np.array([[1,0],[0,-1]])
+    return np.dot(v1,reflMatrix)
+
+def reflY(v1):
+    reflMatrix = np.array([[-1,0],[0,1]])
+    return np.dot(v1,reflMatrix)
     
+def shearX(v1):
+    shearMatrix = np.array([[1,2],[0,1]])
+    return np.dot(v1,shearMatrix)
+
+def shearY(v1):
+    shearMatrix = np.array([[1,0],[2,1]])
+    return np.dot(v1,shearMatrix)
     
 def graphVectors(vectorSpace):
     fig, ax = plt.subplots(figsize=(12,10))
@@ -117,7 +100,8 @@ def drawDottedLines(vectorSpace):
 ####################
 #   Run Code Here
 ####################
+'''
 welcome()     
 vectorSpace = options()
 vectorSpace = np.array(vectorSpace)
-graphVectors(vectorSpace)
+graphVectors(vectorSpace)'''
