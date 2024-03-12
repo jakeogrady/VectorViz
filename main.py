@@ -1,3 +1,4 @@
+from tkinter import *
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
@@ -59,7 +60,7 @@ def graphVectors(vectorSpace):
     ax.set_xlabel("X")
     ax.set_ylabel("Y")
     plt.legend()
-    plt.show()
+    return fig
     
 def setAxLims(ax, vectorSpace):
     minX, minY = np.min(vectorSpace, axis=0)

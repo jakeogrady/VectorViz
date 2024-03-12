@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import font
 import ttkbootstrap as ttk
 import main
+from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk) 
 
 # Initialize window
 window = tk.Tk()
@@ -12,9 +13,14 @@ window.geometry("700x550")
 
 #String Variable
 operation = ""
+canvas = None
 
 entryVal1 = tk.StringVar()
 entryVal2 = tk.StringVar()
+
+def close():
+    window.quit()
+    window.destroy()
     
 def clickButton(args):
     global operation
@@ -45,14 +51,21 @@ def v2EntryGet():
     return vector2Entry.get()
 
 def calc():
+    global canvas
     val1 = entryVal1.get()
     val2 = entryVal2.get() if vector2Entry.cget('state') == 'enabled' else None
 
     vectorSpace = main.options(operation,val1,val2)
-    main.graphVectors(vectorSpace)
+    fig = main.graphVectors(vectorSpace)
+    
+    if canvas:
+        canvas.get_tk_widget().destroy()
+        
+    canvas = FigureCanvasTkAgg(fig, master=window)
+    canvas.draw()
+    canvas.get_tk_widget().pack()
+    
 
-# set stringvar with value of button for later
-# use match statement when submit button to run appropriate function
 # SetUp Style
 
 style = ttk.Style()
@@ -117,4 +130,6 @@ vector2Entry.grid(row=1, column=0, pady = 10)
 mainFrame.pack(side='bottom', pady = 30)
 buttonFrame.pack(side='top',fill=None,expand=False,pady=30)
 entryFrame.pack(side ='top',fill=None, expand=False)
+
+window.protocol("WM_DELETE_WINDOW", close)
 window.mainloop()
