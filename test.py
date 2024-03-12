@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import font
 import ttkbootstrap as ttk
-import main 
+import main
 
 # Initialize window
 window = tk.Tk()
@@ -15,29 +15,49 @@ operation = ""
 
 entryVal1 = tk.StringVar()
 entryVal2 = tk.StringVar()
-def clickEntry(args):
-    args.delete(0, 'end')
     
 def clickButton(args):
+    global operation
     operation = args.cget('text')
-    if (operation == 'Add'):
+    
+    checkEntries = True
+    
+    if (operation == 'Add' or operation == 'Scalar'):
         vector2Entry.config(state='enabled')
     else:
         vector2Entry.config(state='disabled')
-    calcButton.config(state='enabled')
+        
+    for widget in entryFrame.winfo_children():
+        if isinstance(widget, tk.Entry):
+            if widget.cget('state') == 'enabled' and not widget.get():
+                checkEntries = False
+                break
+            
+    if (checkEntries):
+        calcButton.config(state='enabled')
+    else:
+        calcButton.config(state='disabled')
 
-def calc(operation,entryVal1, entryVal2):
-    print(operation)
-    print(entryVal1.get())
-    print(entryVal2.get())
-    
+def v1EntryGet():
+    return vector1Entry.get()   
+
+def v2EntryGet():
+    return vector2Entry.get()
+
+def calc():
+    val1 = entryVal1.get()
+    val2 = entryVal2.get() if vector2Entry.cget('state') == 'enabled' else None
+
+    vectorSpace = main.options(operation,val1,val2)
+    main.graphVectors(vectorSpace)
 
 # set stringvar with value of button for later
 # use match statement when submit button to run appropriate function
 # SetUp Style
+
 style = ttk.Style()
-style.configure('TButton', ipadx=100,ipady=30,
-                width=15,font=("Arial",12))
+style.configure('TButton', ipadx=80,ipady=20,
+                width=10,font=("Arial",12))
 
 # Initialize Main Frame
 mainFrame = tk.Frame(window)
@@ -51,23 +71,25 @@ buttonFrame.columnconfigure(2, weight = 1)
 buttonFrame.columnconfigure(3, weight = 1)
 buttonFrame.columnconfigure(4, weight = 1)
 buttonFrame.columnconfigure(5, weight = 1)
-buttonFrame.rowconfigure(0, weight= 1)
+buttonFrame.columnconfigure(6, weight = 1)
 
+buttonFrame.rowconfigure(0, weight= 1)
 
 #Buttons
 addButton = ttk.Button(buttonFrame,text="Add", command = lambda: clickButton(addButton))
-scalarButton = ttk.Button(buttonFrame, text="Mult", command = lambda: clickButton(scalarButton))
 ReflYButton = ttk.Button(buttonFrame, text="Refl Y", command = lambda: clickButton(ReflYButton))
 ReflXButton = ttk.Button(buttonFrame, text="Refl X", command = lambda: clickButton(ReflXButton))
-ShearXButton = ttk.Button(buttonFrame, text="Shear X", command = lambda: clickButton(ShearXButton))
-ShearYButton = ttk.Button(buttonFrame, text="Shear Y", command = lambda: clickButton(ShearYButton))
+shearXButton = ttk.Button(buttonFrame, text="Shear X", command = lambda: clickButton(shearXButton))
+shearYButton = ttk.Button(buttonFrame, text="Shear Y", command = lambda: clickButton(shearYButton))
+scalarButton = ttk.Button(buttonFrame, text="Scalar", command = lambda: clickButton(scalarButton))
+
 
 addButton.grid(row=0, column=0,padx=10)
-scalarButton.grid(row=0, column=1,padx = 10)
 ReflXButton.grid(row=0, column=2,padx=10)
 ReflYButton.grid(row=0, column=3,padx=10)
-ShearXButton.grid(row=0, column=4,padx=10)
-ShearYButton.grid(row=0, column=5,padx=10)
+shearXButton.grid(row=0, column=4,padx=10)
+shearYButton.grid(row=0, column=5,padx=10)
+scalarButton.grid(row=0, column=6,padx=10)
 
 #Entry Frame
 entryFrame = tk.Frame(mainFrame)
@@ -79,22 +101,14 @@ entryFrame.columnconfigure(0, weight=1)
 
 calcButton = ttk.Button(entryFrame, text="Calculate",
                         state="disabled",
-                        command = lambda: main.options(operation,entryVal1,entryVal2))
+                        command = calc)
 calcButton.grid(row = 2, column=0)
 
 #Entry Fields
 vector1Entry = ttk.Entry(entryFrame, width=80,
-                         textvariable=entryVal1)
+                         textvariable=entryVal1, state='enabled')
 vector2Entry = ttk.Entry(entryFrame, width=80,
                          textvariable=entryVal2)
-
-#Remove Entry text from Entry Fields when clicked
-vector1Entry.bind("<Button-1>", lambda event: clickEntry(vector1Entry))
-vector2Entry.bind("<Button-1>", lambda event: clickEntry(vector2Entry))
-
-# Placeholder Text for Entry Fields
-vector1Entry.insert(0,"Enter a vector here: ")
-vector2Entry.insert(0,"Enter a vector here: ")
 
 vector1Entry.grid(row=0, column=0, pady = 10)
 vector2Entry.grid(row=1, column=0, pady = 10)

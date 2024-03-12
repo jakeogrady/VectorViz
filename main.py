@@ -2,46 +2,55 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 
-def options(operation, v1, v2=None):
+
+def options(operation, ev1, ev2):
+    arr = []
+    v1 = getVector(ev1)
+    arr.append(v1)
     
-    operations = {
-        'add': addVectors,
-        'reflectionx': reflX,
-        'reflectiony': reflY,
-        'shearx': shearX,
-        'sheary': shearY
-    }
-    
-    if operation == 'add' and v2 is not None:
-        return operations[operation](v1,v2)
+    if (operation == 'Add'):
+        v2 = getVector(ev2)
+        arr.append(v2)
+        arr.append(addVectors(arr))
+    elif (operation == 'Scalar'):
+        scalar = getVector(ev2)
+        arr.append(scalar)
+        v2 = scaleVector(arr)
+    elif(operation == 'Refl X'):
+        reflMatrix = np.array([[1,0],[0,-1]])
+        v2 = np.matmul(v1,reflMatrix)
+    elif(operation == 'Refl Y'):
+        reflMatrix = np.array([[-1,0],[0,1]])
+        v2 = np.matmul(v1,reflMatrix)
+    elif(operation == 'Shear Y'):
+        shearMatrix = np.array([[1,0],[2,1]])
+        v2 = np.matmul(v1,shearMatrix)
+    elif(operation == 'Shear X'):
+        shearMatrix = np.array([[1,2],[0,1]])
+        v2 = np.matmul(v1,shearMatrix)
     else:
-        return operations[operation](v1)
-
+        print("Help")
+        exit()
         
+    arr.append(v2)  
+    return arr
 
-def getVector(v):
-    v1 = np.fromstring(v, sep=' ', dtype=int)
+def getVector(userInput):
+    v1 = np.fromstring(userInput, sep=' ', dtype=int)
     return v1
 
-def addVectors(v1, v2):
-    return v1 + v2
+def addVectors(arr):
+    v1 = arr[0]
+    v2 = arr[1]
+    return (v1+v2)
 
-def reflX(v1):
-    reflMatrix = np.array([[1,0],[0,-1]])
-    return np.dot(v1,reflMatrix)
+def scaleVector(arr):
+    v1 = arr[0]
+    scalar = arr[1][0]
+    v3 = v1*scalar
+    del arr[1]
+    return (v3)
 
-def reflY(v1):
-    reflMatrix = np.array([[-1,0],[0,1]])
-    return np.dot(v1,reflMatrix)
-    
-def shearX(v1):
-    shearMatrix = np.array([[1,2],[0,1]])
-    return np.dot(v1,shearMatrix)
-
-def shearY(v1):
-    shearMatrix = np.array([[1,0],[2,1]])
-    return np.dot(v1,shearMatrix)
-    
 def graphVectors(vectorSpace):
     fig, ax = plt.subplots(figsize=(12,10))
     setAxLims(ax,vectorSpace)    
@@ -94,14 +103,3 @@ def drawDottedLines(vectorSpace):
     for v in vectorSpace[:2]:
         plt.plot([v[0],v3[0]],[v[1],v3[1]],c='g',linewidth=2,
                  marker='o', linestyle='--')
-        
-        
-        
-####################
-#   Run Code Here
-####################
-'''
-welcome()     
-vectorSpace = options()
-vectorSpace = np.array(vectorSpace)
-graphVectors(vectorSpace)'''
