@@ -1,4 +1,0 @@
-Need to refactor options() in main. Break it down more and seperate IO
-Begin to integrate the plt functions with GUI
-Try to bring back in scalar function 
-Improve the visuals of the GUI
