@@ -26,12 +26,19 @@ def options(operation, ev1, ev2):
         v2 = np.matmul(v1,reflMatrix)
         arr.append(v2)
     elif(operation == 'Shear Y'):
-        shearMatrix = np.array([[1,0],[2,1]])
-        v2 = np.matmul(v1,shearMatrix)
+        shearFactor = getVector(ev2)[0]
+        shearMatrix = np.array([[1,0],[shearFactor,1]])
+        v2 = np.matmul(shearMatrix,v1)
         arr.append(v2)
     elif(operation == 'Shear X'):
-        shearMatrix = np.array([[1,2],[0,1]])
-        v2 = np.matmul(v1,shearMatrix)
+        shearFactor = getVector(ev2)[0]
+        shearMatrix = np.array([[1,shearFactor],[0,1]])
+        v2 = np.matmul(shearMatrix,v1)
+        arr.append(v2)
+    elif (operation == 'Rotate'):
+        angle = getVector(ev2)[0]
+        rotationMatrix = createRotationMatrix(angle)
+        v2 = np.matmul(rotationMatrix,v1)
         arr.append(v2)
     else:
         print("Help")
@@ -48,6 +55,16 @@ def addVectors(arr):
     v2 = arr[1]
     return (v1+v2)
 
+def createRotationMatrix(angle):
+    theta = angle % 360
+    degreeAngle = theta * (np.pi/180)
+    cos = np.cos(degreeAngle)
+    sine = np.sin(degreeAngle)
+    print(cos,sine)
+    rotationMatrix = np.array([[cos,-sine],[sine,cos]])
+    print(f'{rotationMatrix}: rotation matrix')
+    return (rotationMatrix)
+    
 def scaleVector(arr):
     v1 = arr[0]
     scalar = arr[1][0]
@@ -56,7 +73,6 @@ def scaleVector(arr):
     return (v3)
 
 def graphVectors(vectorSpace):
-    plt.style.use('dark_background')
     fig, ax = plt.subplots(figsize=(12,10))
     setAxLims(ax,vectorSpace)    
     createAx(ax)
@@ -99,14 +115,15 @@ def drawVectors(ax,vectorSpace):
     '''
     colors = ['r','b','magenta','g']
     count = 0
-   
     for v in vectorSpace:
-        ax.quiver(0,0,v[0],v[1], angles='xy',scale_units='xy',scale=1,color=colors[count],zorder=3-count,label="v"+str(count+1))
+        ax.quiver(0,0,v[0],v[1], angles='xy',scale_units='xy',scale=1,
+                  color=colors[count],zorder=3-count,
+                  label=str(v))
         count +=1
        
           
 def drawDottedLines(vectorSpace):
     v3 = vectorSpace[2]
     for v in vectorSpace[:2]:
-        plt.plot([v[0],v3[0]],[v[1],v3[1]],c='red',linewidth=2,
+        plt.plot([v[0],v3[0]],[v[1],v3[1]],c='green',linewidth=2,
                  marker='o', linestyle='--')

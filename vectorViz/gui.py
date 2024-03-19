@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import END, font
+from matplotlib.pylab import RandomState
 import ttkbootstrap as ttk
 import customtkinter as ctk
 import main as main
@@ -29,14 +30,14 @@ def clickButton(args):
     
     checkEntries = True
     
-    if (operation !='Add'):
+    if (operation == 'Refl X' or operation == 'Refl Y'):
         vector2Entry.delete(0,END)
 
     
-    if (operation == 'Add' or operation == 'Scalar'):
-        vector2Entry.configure(state='normal')
-    else:
+    if (operation == 'Refl Y' or operation == 'Refl X'):
         vector2Entry.configure(state='disabled')
+    else:
+        vector2Entry.configure(state='normal')
         
     for widget in entryFrame.winfo_children():
         if isinstance(widget, tk.Entry):
@@ -102,14 +103,16 @@ ReflXButton = ctk.CTkButton(buttonFrame, text="Refl X", command = lambda: clickB
 shearXButton = ctk.CTkButton(buttonFrame, text="Shear X", command = lambda: clickButton(shearXButton))
 shearYButton = ctk.CTkButton(buttonFrame, text="Shear Y", command = lambda: clickButton(shearYButton))
 scalarButton = ctk.CTkButton(buttonFrame, text="Scalar", command = lambda: clickButton(scalarButton))
+rotateButton = ctk.CTkButton(buttonFrame, text="Rotate", command = lambda: clickButton(rotateButton))
 
 
 addButton.grid(row=0, column=0,padx=10)
-ReflXButton.grid(row=0, column=2,padx=10)
-ReflYButton.grid(row=0, column=3,padx=10)
-shearXButton.grid(row=0, column=4,padx=10)
-shearYButton.grid(row=0, column=5,padx=10)
-scalarButton.grid(row=0, column=6,padx=10)
+ReflXButton.grid(row=0, column=1,padx=10)
+ReflYButton.grid(row=0, column=2,padx=10)
+shearXButton.grid(row=0, column=3,padx=10)
+shearYButton.grid(row=0, column=4,padx=10)
+scalarButton.grid(row=0, column=5,padx=10)
+rotateButton.grid(row=0,column=6,padx=10)
 
 #Entry Frame
 entryFrame = ctk.CTkFrame(mainFrame,width=1000,height=100)
