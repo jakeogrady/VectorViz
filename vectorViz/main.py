@@ -1,4 +1,4 @@
-import array
+
 from tkinter import *
 import numpy as np
 import matplotlib.pyplot as plt
@@ -78,6 +78,7 @@ def graphVectors(vectorSpace):
     createAx(ax)
     drawVectors(ax,vectorSpace)
     plt.legend()
+    
     if (len(vectorSpace)>2):
         drawDottedLines(vectorSpace)
     return fig
@@ -85,15 +86,15 @@ def graphVectors(vectorSpace):
 def setAxLims(ax, vectorSpace):
     minX, minY = np.min(vectorSpace, axis=0)
     maxX, maxY = np.max(vectorSpace, axis=0)
+    
     bigY = np.max(np.abs([maxY, minY]))
     bigX = np.max(np.abs([maxX, minX]))
-    #print(bigX,bigY)
     if (minX >= 0 and maxX >= 0):
-        ax.set_xlim(0,bigX+1)
+        ax.set_xlim(0,bigX)
     else:
         ax.set_xlim(-bigX,bigX)
     if (minY>=0 and maxY>=0):
-        ax.set_ylim(0,bigY+1)
+        ax.set_ylim(0,bigY)
     else:
         ax.set_ylim(-bigY,bigY)
          
