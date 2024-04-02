@@ -50,9 +50,9 @@ Again, to verify correct installation, use 'python3 --version'
 git clone https://github.com/jakeogrady/VectorViz.git
 ```
 
-2. Install dependenices needed:
+2. Install dependencies needed:
 ```bash
-cd yourprojectname
+cd vectorViz
 pip3 install -r requirements.txt
 ```
 
